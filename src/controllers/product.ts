@@ -75,3 +75,17 @@ export const getCategories = TryCatch(async (req, res, next) => {
   res.status(200).json({ success: true, categories });
 });
 
+export const getAllProducts = TryCatch(async (req, res, next) => {
+  const allProducts = await Product.find({});
+  res.status(200).json({ success: true, allProducts });
+});
+
+export const getProduct = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) return next(new ErrorHandler("Product Id not send", 400));
+  const product = await Product.findById(req.params.id);
+  if (!product) return next(new ErrorHandler("Product not found!", 400));
+
+  res.status(200).json({ success: true, product });
+});
+
