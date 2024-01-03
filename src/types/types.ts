@@ -17,8 +17,8 @@ export type NewProductRequestBody = {
   photo: string;
   stock: number;
   price: number;
-  size?: string[];
-  color?: string[];
+  size?: string;
+  color?: string;
 };
 
 export type ControllerType = (
