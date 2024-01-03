@@ -89,3 +89,39 @@ export const getProduct = TryCatch(async (req, res, next) => {
   res.status(200).json({ success: true, product });
 });
 
+export const updateProduct = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) return next(new ErrorHandler("Product Id not send", 400));
+
+  const photo = req.file;
+  const product = await Product.findByIdAndUpdate(
+    id,
+    {
+      ...req.body,
+      photo: photo?.path!,
+    },
+    { new: true }
+  );
+  if (!product) return next(new ErrorHandler("Product not found!", 400));
+
+  if (photo) {
+    deletePhotoByPath(product.photo, "Old Photo deleted!");
+  }
+  res
+    .status(200)
+    .json({ success: true, message: "Product updated successffully" });
+});
+
+export const deleteProduct = TryCatch(async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) return next(new ErrorHandler("Product Id not send", 400));
+
+  const product = await Product.findById(id);
+  if (!product) return next(new ErrorHandler("Product not found!", 400));
+  deletePhotoByPath(product.photo, "Old Photo deleted!");
+  await product.deleteOne();
+
+  res
+    .status(200)
+    .json({ success: true, message: "Product deleted successfully!" });
+});
