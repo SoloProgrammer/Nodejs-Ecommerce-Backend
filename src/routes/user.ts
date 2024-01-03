@@ -9,7 +9,6 @@ import AdminMiddleware from "../middlewares/authAdmin.js";
 
 const router = express.Router();
 
-
 // /api/v1/user/new
 router.post("/new", newUser);
 
