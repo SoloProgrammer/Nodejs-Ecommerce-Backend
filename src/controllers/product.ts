@@ -1,10 +1,12 @@
 import { Request } from "express";
 import { TryCatch } from "../middlewares/error.js";
 import { NewProductRequestBody } from "../types/types.js";
-import { checkRequiredFieldsPresentInReqdata } from "../utils/helpers.js";
+import {
+  checkRequiredFieldsPresentInReqdata,
+  deletePhotoByPath,
+} from "../utils/helpers.js";
 import { Product } from "../models/product.js";
 import { ErrorHandler } from "../utils/utility-classes.js";
-import { rm } from "fs";
 
 // add new product controller
 export const addNewProduct = TryCatch(
@@ -27,7 +29,7 @@ export const addNewProduct = TryCatch(
     }
 
     const deletePhoto = () => {
-      rm(photo?.path!, () => console.log("Photo deleted!"));
+      deletePhotoByPath(photo?.path!);
     };
 
     checkRequiredFieldsPresentInReqdata(
@@ -57,3 +59,12 @@ export const addNewProduct = TryCatch(
     });
   }
 );
+
+export const getLatestProducts = TryCatch(async (req, res, next) => {
+  const products = await Product.find({}).limit(5).sort({ createdAt: -1 });
+
+  res.status(200).json({
+    products,
+    success: true,
+  });
+});

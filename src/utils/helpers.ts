@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { rm } from "fs";
 import { ErrorHandler } from "./utility-classes.js";
 
 export const isFieldPresentInRequest = (
@@ -39,4 +39,8 @@ export const checkRequiredFieldsPresentInReqdata = (
   } catch (error) {
     throw error;
   }
+};
+
+export const deletePhotoByPath = (path: string, message?: string) => {
+  rm(path, () => console.log(message || "Photo deleted!"));
 };
