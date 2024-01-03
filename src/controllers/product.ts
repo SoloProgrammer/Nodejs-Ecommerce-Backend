@@ -8,7 +8,7 @@ import { ErrorHandler } from "../utils/utility-classes.js";
 // add new product controller
 export const addNewProduct = TryCatch(
   async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
-    const { color, size, slug } = req.body;
+    const { slug } = req.body;
 
     const requiredFields = [
       "name",
@@ -29,12 +29,12 @@ export const addNewProduct = TryCatch(
     let product = await Product.findOne({ slug });
 
     if (product)
-      return next(new ErrorHandler("Product with same slug already exixts!"));
+      return next(
+        new ErrorHandler("Product with same slug already exixts!", 400)
+      );
 
     product = await Product.create({
       ...req.body,
-      color: color || undefined,
-      size: size || undefined,
       photo,
     });
 
