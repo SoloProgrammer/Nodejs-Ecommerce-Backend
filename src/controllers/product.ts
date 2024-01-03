@@ -7,6 +7,7 @@ import {
 } from "../utils/helpers.js";
 import { Product } from "../models/product.js";
 import { ErrorHandler } from "../utils/utility-classes.js";
+import { readSync, rm } from "fs";
 
 // add new product controller
 export const addNewProduct = TryCatch(
@@ -68,3 +69,9 @@ export const getLatestProducts = TryCatch(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getCategories = TryCatch(async (req, res, next) => {
+  const categories = await Product.distinct("category");
+  res.status(200).json({ success: true, categories });
+});
+
