@@ -1,16 +1,13 @@
-import { NextFunction, Request, Response } from "express";
+import e, { Request } from "express";
 import { NewUserRequestBody } from "../types/types.js";
 import { User } from "../models/user.js";
 import { ErrorHandler } from "../utils/utility-classes.js";
 import { checkRequiredFieldsPresentInReqdata } from "../utils/helpers.js";
 import { TryCatch } from "../middlewares/error.js";
 
+// Create new user controller
 export const newUser = TryCatch(
-  async (
-    req: Request<{}, {}, NewUserRequestBody>,
-    res: Response,
-    next: NextFunction
-  ) => {
+  async (req: Request<{}, {}, NewUserRequestBody>, res, next) => {
     const { email, dob } = req.body;
 
     const requiredFields = ["name", "email", "_id", "dob", "gender", "photo"];
@@ -19,9 +16,10 @@ export const newUser = TryCatch(
 
     let user = await User.findOne({ email });
 
-    if (user) {
+    if (user)
       throw new ErrorHandler("User with this email already exists", 400);
-    }
+
+    console.log("user");
 
     user = await User.create({ ...req.body, dob: new Date(dob) });
 
@@ -31,3 +29,31 @@ export const newUser = TryCatch(
     });
   }
 );
+
+// Get all users controller
+export const allUsers = TryCatch(async (req, res, next) => {
+  const users = await User.find({});
+  res.status(200).json({
+    users,
+    success: true,
+  });
+});
+
+// Get user details controller
+export const singleUser = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new ErrorHandler("Invalid Id", 400);
+  }
+  res.status(200).json({ success: true, user });
+});
+
+// Delete user controller
+export const deleteUser = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new ErrorHandler("Invalid Id", 400);
+  }
+  await user.deleteOne();
+  res.status(200).json({ success: true, message: "User deleted successfully" });
+});
