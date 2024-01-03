@@ -24,6 +24,7 @@ export const checkRequiredFieldsPresentInReqdata = (
   next?: NextFunction
 ) => {
   try {
+    
     const invalidFields: string[] = [];
 
     requiredFields.forEach((field) => {

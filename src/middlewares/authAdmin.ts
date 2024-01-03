@@ -14,13 +14,13 @@ const isAdmin = TryCatch(async (req, res, next) => {
 
   //   const data = Jwt.verify(token, jwt_secret);
 
-  const { id } = req.query;
+  const { uId } = req.query;
 
-  if (!id) throw new ErrorHandler("Not authenticated, Please login!", 401);
+  if (!uId) throw new ErrorHandler("Not authenticated, Please login!", 401);
 
-  const user = await User.findById(id);
+  const user = await User.findById(uId);
 
-  if (!user) throw new ErrorHandler("Invalid id");
+  if (!user) throw new ErrorHandler("Invalid uId");
 
   if (user.role !== "admin")
     throw new ErrorHandler("Not authoraized to access this request!", 401);
