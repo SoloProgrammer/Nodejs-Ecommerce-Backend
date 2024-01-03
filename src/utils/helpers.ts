@@ -21,16 +21,16 @@ export const isFieldPresentInRequest = (
 export const checkRequiredFieldsPresentInReqdata = (
   requiredFields: string[],
   reqData: Record<string, any>,
-  next?: NextFunction
+  extraFunction?: () => void
 ) => {
   try {
-    
     const invalidFields: string[] = [];
 
     requiredFields.forEach((field) => {
       if (!isFieldPresentInRequest(reqData, field)) invalidFields.push(field);
     });
     if (invalidFields.length > 0) {
+      extraFunction && extraFunction();
       throw new ErrorHandler(
         `Fields that are missing in reqBody: ${invalidFields.join(", ")}`,
         400

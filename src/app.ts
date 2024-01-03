@@ -21,6 +21,7 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/product", productRoutes);
 
 app.use(errorMiddleWare);
+app.use("/uploads", express.static("uploads"));
 
 app.listen(PORT, () => {
   console.log(`Server is live on http://localhost:${PORT}`);

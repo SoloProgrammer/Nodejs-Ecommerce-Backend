@@ -4,6 +4,7 @@ import { NewProductRequestBody } from "../types/types.js";
 import { checkRequiredFieldsPresentInReqdata } from "../utils/helpers.js";
 import { Product } from "../models/product.js";
 import { ErrorHandler } from "../utils/utility-classes.js";
+import { rm } from "fs";
 
 // add new product controller
 export const addNewProduct = TryCatch(
@@ -19,23 +20,34 @@ export const addNewProduct = TryCatch(
       "stock",
     ];
 
-    const photo = req.file?.path;
+    const photo = req.file;
 
-    if (!photo)
+    if (!photo) {
       return next(new ErrorHandler("Photo of product is required", 400));
+    }
 
-    checkRequiredFieldsPresentInReqdata(requiredFields, { ...req.body });
+    const deletePhoto = () => {
+      rm(photo?.path!, () => console.log("Photo deleted!"));
+    };
+
+    checkRequiredFieldsPresentInReqdata(
+      requiredFields,
+      { ...req.body },
+      deletePhoto
+    );
 
     let product = await Product.findOne({ slug });
 
-    if (product)
+    if (product) {
+      deletePhoto();
       return next(
         new ErrorHandler("Product with same slug already exixts!", 400)
       );
+    }
 
     product = await Product.create({
       ...req.body,
-      photo,
+      photo: photo?.path,
     });
 
     res.status(201).json({
