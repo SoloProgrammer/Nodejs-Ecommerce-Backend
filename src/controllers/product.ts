@@ -118,6 +118,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
 
   const product = await Product.findById(id);
   if (!product) return next(new ErrorHandler("Product not found!", 400));
+  
   deletePhotoByPath(product.photo, "Old Photo deleted!");
   await product.deleteOne();
 
