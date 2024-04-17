@@ -23,7 +23,7 @@ router.get("/latest", getLatestProducts);
 router.get("/categories", getCategories);
 
 // route - /api/v1/product/all
-router.get("/all", getAllProducts);
+router.get("/all", AdminMiddleware, getAllProducts);
 
 // route - /api/v1/product/:id (Roues chaining to get, update and delete the product by id passed in the params)
 router
