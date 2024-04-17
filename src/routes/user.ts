@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
   allUsers,
   deleteUser,
@@ -7,7 +7,7 @@ import {
 } from "../controllers/user.js";
 import AdminMiddleware from "../middlewares/authAdmin.js";
 
-const router = express.Router();
+const router = Router();
 
 // /api/v1/user/new
 router.post("/new", newUser);
@@ -16,6 +16,9 @@ router.post("/new", newUser);
 router.get("/all", AdminMiddleware, allUsers);
 
 // /api/v1/user/:id
-router.route("/:id").get(AdminMiddleware, singleUser).delete(AdminMiddleware, deleteUser);
+router
+  .route("/:id")
+  .get(AdminMiddleware, singleUser)
+  .delete(AdminMiddleware, deleteUser);
 
 export default router;
