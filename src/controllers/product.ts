@@ -6,11 +6,10 @@ import {
   deletePhotoByPath,
 } from "../utils/helpers.js";
 import { Product } from "../models/product.js";
-import { ErrorHandler } from "../utils/utility-classes.js";
-import { readSync, rm } from "fs";
+import { ErrorHandler } from "../utils/exceptions.js";
 
 // add new product controller
-export const addNewProduct = TryCatch(
+const addNewProduct = TryCatch(
   async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
     const { slug } = req.body;
 
@@ -61,7 +60,8 @@ export const addNewProduct = TryCatch(
   }
 );
 
-export const getLatestProducts = TryCatch(async (req, res, next) => {
+// get latest products controller
+const getLatestProducts = TryCatch(async (req, res, next) => {
   const products = await Product.find({}).limit(5).sort({ createdAt: -1 });
 
   res.status(200).json({
@@ -70,17 +70,20 @@ export const getLatestProducts = TryCatch(async (req, res, next) => {
   });
 });
 
-export const getCategories = TryCatch(async (req, res, next) => {
+// get all categories controller
+const getCategories = TryCatch(async (req, res, next) => {
   const categories = await Product.distinct("category");
   res.status(200).json({ success: true, categories });
 });
 
-export const getAllProducts = TryCatch(async (req, res, next) => {
+// get all products controller
+const getAllProducts = TryCatch(async (req, res, next) => {
   const allProducts = await Product.find({});
   res.status(200).json({ success: true, allProducts });
 });
 
-export const getProduct = TryCatch(async (req, res, next) => {
+// get product by id controller
+const getProduct = TryCatch(async (req, res, next) => {
   const { id } = req.params;
   if (!id) return next(new ErrorHandler("Product Id not send", 400));
   const product = await Product.findById(req.params.id);
@@ -89,7 +92,8 @@ export const getProduct = TryCatch(async (req, res, next) => {
   res.status(200).json({ success: true, product });
 });
 
-export const updateProduct = TryCatch(async (req, res, next) => {
+// update product by id controller
+const updateProduct = TryCatch(async (req, res, next) => {
   const { id } = req.params;
   if (!id) return next(new ErrorHandler("Product Id not send", 400));
 
@@ -112,13 +116,14 @@ export const updateProduct = TryCatch(async (req, res, next) => {
     .json({ success: true, message: "Product updated successffully" });
 });
 
-export const deleteProduct = TryCatch(async (req, res, next) => {
+// delete product by id controller
+const deleteProduct = TryCatch(async (req, res, next) => {
   const { id } = req.params;
   if (!id) return next(new ErrorHandler("Product Id not send", 400));
 
   const product = await Product.findById(id);
   if (!product) return next(new ErrorHandler("Product not found!", 400));
-  
+
   deletePhotoByPath(product.photo, "Old Photo deleted!");
   await product.deleteOne();
 
@@ -126,3 +131,13 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
     .status(200)
     .json({ success: true, message: "Product deleted successfully!" });
 });
+
+export {
+  deleteProduct,
+  getProduct,
+  getAllProducts,
+  updateProduct,
+  getCategories,
+  getLatestProducts,
+  addNewProduct,
+};
