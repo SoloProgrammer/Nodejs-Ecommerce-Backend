@@ -1,5 +1,5 @@
 import { rm } from "fs";
-import { ErrorHandler } from "./utility-classes.js";
+import { ErrorHandler } from "./exceptions.js";
 
 export const isFieldPresentInRequest = (
   reqData: Record<string, any>,
@@ -41,6 +41,6 @@ export const checkRequiredFieldsPresentInReqdata = (
   }
 };
 
-export const deletePhotoByPath = (path: string, message?: string) => {
+export const deletePhotoByPath = (path: string, message?: string): void => {
   rm(path, () => console.log(message || "Photo deleted!"));
 };

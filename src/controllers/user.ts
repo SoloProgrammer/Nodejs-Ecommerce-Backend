@@ -1,7 +1,7 @@
 import e, { Request } from "express";
 import { NewUserRequestBody } from "../types/types.js";
 import { User } from "../models/user.js";
-import { ErrorHandler } from "../utils/utility-classes.js";
+import { ErrorHandler } from "../utils/exceptions.js";
 import { checkRequiredFieldsPresentInReqdata } from "../utils/helpers.js";
 import { TryCatch } from "../middlewares/error.js";
 
