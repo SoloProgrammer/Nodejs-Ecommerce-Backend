@@ -28,8 +28,8 @@ router.get("/all", AdminMiddleware, getAllProducts);
 // route - /api/v1/product/:id (Roues chaining to get, update and delete the product by id passed in the params)
 router
   .route("/:id")
-  .get(getProduct)
-  .put(SingleUpload, updateProduct)
-  .delete(deleteProduct);
+  .get(AdminMiddleware, getProduct)
+  .put(AdminMiddleware, SingleUpload, updateProduct)
+  .delete(AdminMiddleware, deleteProduct);
 
 export default router;
